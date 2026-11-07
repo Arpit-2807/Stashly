@@ -1,4 +1,4 @@
-package com.arpit.stashly_server;
+package com.arpit.stashly;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
