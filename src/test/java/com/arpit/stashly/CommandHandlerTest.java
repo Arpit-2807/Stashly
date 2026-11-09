@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CommandHandlerTest {
 
-    private final CommandHandler handler = new CommandHandler();
+    private final CommandHandler handler = new CommandHandler(new Store());
 
     @Test
     void pingGivesPong() {
@@ -32,4 +32,32 @@ public class CommandHandlerTest {
     void unknownCommandIsAnError() {
         assertEquals("-ERR unknown command 'HELLO'\r\n", handler.run(List.of("HELLO")));
     }
+
+    @Test
+    void setReturnOk() {
+        assertEquals("+OK\r\n", handler.run(List.of("SET", "name", "arpit")));
+    }
+
+    @Test
+    void setThenGetReturnsTheValue() {
+        handler.run(List.of("SET", "name", "arpit"));
+        assertEquals("$5\r\narpit\r\n", handler.run(List.of("GET", "name")));
+    }
+
+    @Test
+    void getMissingKeyReturnsNull() {
+        assertEquals("$-1\r\n", handler.run(List.of("GET", "missing")));
+    }
+
+    @Test
+    void delReturnsHowManyWereDeleted() {
+        handler.run(List.of("SET", "a", "1"));
+        assertEquals(":1\r\n", handler.run(List.of("EXISTS", "a", "zzz")));
+    }
+
+    @Test
+    void setWrongArgumentsIsAnError() {
+        assertEquals("-ERR wrong number of arguments for 'set' command\r\n", handler.run(List.of("SET", "onlykey")));
+    }
+
 }

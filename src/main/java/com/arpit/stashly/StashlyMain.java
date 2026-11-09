@@ -14,7 +14,7 @@ public class StashlyMain {
 
     public static void main(String[] args) throws IOException {
         int port = 6380;
-        CommandHandler handler = new CommandHandler();
+        CommandHandler handler = new CommandHandler(new Store());
         try (ServerSocket server = new ServerSocket(port)) {
             System.out.println("Stashly is listening on port " + port);
 
