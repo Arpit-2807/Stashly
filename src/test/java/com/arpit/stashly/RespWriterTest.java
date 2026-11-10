@@ -30,4 +30,14 @@ public class RespWriterTest {
         assertEquals("$-1\r\n", RespWriter.bulk(null));
     }
 
+    @Test
+    void arrayReply() {
+        assertEquals("*2\r\n$1\r\na\r\n$1\r\nb\r\n", RespWriter.array(java.util.List.of("a", "b")));
+    }
+
+    @Test
+    void emptyArrayReply() {
+        assertEquals("*0\r\n", RespWriter.array(java.util.List.of()));
+    }
+
 }

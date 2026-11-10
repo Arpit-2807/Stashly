@@ -60,4 +60,48 @@ public class CommandHandlerTest {
         assertEquals("-ERR wrong number of arguments for 'set' command\r\n", handler.run(List.of("SET", "onlykey")));
     }
 
+    @Test
+    void incrCountsUp() {
+        assertEquals(":1\r\n", handler.run(List.of("INCR", "visits")));
+        assertEquals(":2\r\n", handler.run(List.of("INCR", "visits")));
+    }
+
+    @Test
+    void decrCountsDown() {
+        handler.run(List.of("SET", "n", "10"));
+        assertEquals(":9\r\n", handler.run(List.of("DECR", "n")));
+    }
+
+    @Test
+    void incrOnTextIsAnError() {
+        handler.run(List.of("SET", "name", "arpit"));
+        assertEquals("-ERR value is not an integer or out of range\r\n", handler.run(List.of("INCR", "name")));
+    }
+
+    @Test
+    void incrWithoutKeyIsAnError() {
+        assertEquals("-ERR wrong number of arguments for 'incr' command\r\n", handler.run(List.of("INCR")));
+    }
+
+    @Test
+    void dbSizeCountsKeys() {
+        handler.run(List.of("SET", "a", "b"));
+        handler.run(List.of("SET", "b", "2"));
+        assertEquals(":2\r\n", handler.run(List.of("DBSIZE")));
+    }
+
+    @Test
+    void keysListEveryting() {
+        handler.run(List.of("SET", "b", "2"));
+        handler.run(List.of("SET", "a", "1"));
+        assertEquals(":2\r\n$1\r\na\r\n$1\r\nb\r\b\n", handler.run(List.of("KEYS", "*")));
+    }
+
+    @Test
+    void flushallEmptiesStore() {
+        handler.run(List.of("SET", "a", "1"));
+        assertEquals("+OK\r\n", handler.run(List.of("FLUSHALL")));
+        assertEquals(":0\r\n", handler.run(List.of("DBSIZE")));
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.arpit.stashly;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 public class RespWriter {
 
@@ -26,5 +27,15 @@ public class RespWriter {
         }
         int length = text.getBytes(StandardCharsets.UTF_8).length;
         return "$" + length + "\r\n" + text + "\r\n";
+    }
+
+    // *2\r\n$1\r\na\r\n$1\r\bb\r\n -> a list of texts
+    public static String array(List<String> items) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("*").append(items.size()).append("\r\n");
+        for(String item : items) {
+            sb.append(bulk(item));
+        }
+        return sb.toString();
     }
 }

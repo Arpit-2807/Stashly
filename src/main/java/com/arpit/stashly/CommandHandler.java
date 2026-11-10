@@ -72,6 +72,34 @@ public class CommandHandler {
                 return RespWriter.integer(found);
             }
 
+            case "INCR":
+                if(command.size() !=2){
+                    return wrongArgs("incr");
+                }
+                return changeNumber(command.get(1), 1);
+
+            case "DECR":
+                if(command.size() != 2) {
+                    return wrongArgs("decr");
+                }
+                return changeNumber(command.get(1), -1);
+
+            case "DBSIZE":
+                if(command.size() != 1) {
+                    return wrongArgs("dbsize");
+                }
+                return RespWriter.integer(store.size());
+
+            case "KEYS":
+                if(command.size() != 2) {
+                    return wrongArgs("keys");
+                }
+                return RespWriter.array(store.keys(command.get(1)));
+
+            case "FLUSHALL":
+                store.clear();
+                return RespWriter.simple("OK");
+
             default:
                 return RespWriter.error("unknown command '" + name + "'");
         }
@@ -79,5 +107,13 @@ public class CommandHandler {
 
     private String wrongArgs(String commandName) {
         return RespWriter.error("wrong number of arguments for '" + commandName + "' command");
+    }
+
+    private String changeNumber(String key, long delta) {
+        try {
+            return RespWriter.integer(store.incrBy(key, delta));
+        } catch (NumberFormatException | ArithmeticException e) {
+            return RespWriter.error("value is not an integer or out of range");
+        }
     }
 }
