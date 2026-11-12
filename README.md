@@ -58,7 +58,7 @@ Stash KEYS *
 - [x] Replies, `PING`, `ECHO`
 - [x] `SET`, `GET`, `DEL`, `EXISTS`
 - [x] `INCR`, `DECR`, `KEYS`, `DBSIZE`, `FLUSHALL`
-- [ ] Many clients at once
+- [x] Many clients at once
 - [ ] Faster server with a Java NIO event loop
 - [ ] Key expiry (`EXPIRE`, `TTL`)
 - [ ] Lists and hashes
@@ -70,7 +70,6 @@ Stash KEYS *
 ## Known limits (for now)
 
 - Data is lost when the server stops (persistence is planned).
-- The server handles one client at a time (fixed in the next steps).
 - Values are text only.
 
 ## Notes
